@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="lightColor">#FFFFFF</color>
+    <color name="primaryColor">#121212</color>
+    <color name="primaryLightColor">#1F1F1F</color>
+    <color name="primaryDarkColor">#000000</color>
+    <color name="primaryTextColor">#ffffff</color>
+    <color name="playerColor">#00A8CC</color>
+    <color name="botColor">#FFA41B</color>
+</resources>

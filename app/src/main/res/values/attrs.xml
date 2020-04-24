@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="Board">
+        <attr name="playerColor" format="reference" />
+        <attr name="botColor" format="reference" />
+        <attr name="radius" format="float" />
+        <attr name="connectionWidth" format="float" />
+    </declare-styleable>
+</resources>
