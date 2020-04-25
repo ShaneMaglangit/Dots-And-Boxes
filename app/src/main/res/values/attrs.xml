@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="Board">
-        <attr name="playerColor" format="reference" />
+        <attr name="userColor" format="reference" />
         <attr name="botColor" format="reference" />
         <attr name="radius" format="float" />
         <attr name="connectionWidth" format="float" />
+        <attr name="userScore" format="integer" />
+        <attr name="botScore" format="integer" />
     </declare-styleable>
 </resources>

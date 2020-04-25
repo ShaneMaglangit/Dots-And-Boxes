@@ -8,7 +8,7 @@
     tools:context=".MainActivity">
 
     <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/materialToolbar"
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/primaryLightColor"
@@ -19,30 +19,30 @@
         app:title="@string/app_name" />
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/image_user"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        app:layout_constraintBottom_toBottomOf="@+id/textView"
+        app:layout_constraintBottom_toBottomOf="@+id/text_user_score"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/materialToolbar"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
         app:srcCompat="@drawable/ic_player" />
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/image_bot"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginEnd="16dp"
-        app:layout_constraintBottom_toBottomOf="@+id/textView2"
+        app:layout_constraintBottom_toBottomOf="@+id/text_bot_score"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/textView2"
+        app:layout_constraintTop_toTopOf="@+id/text_bot_score"
         app:srcCompat="@drawable/ic_bot" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/text_user_score"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -50,23 +50,24 @@
         android:includeFontPadding="true"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textColor="@color/playerColor"
-        app:layout_constraintStart_toEndOf="@+id/imageView"
-        app:layout_constraintTop_toBottomOf="@+id/materialToolbar"
+        app:layout_constraintStart_toEndOf="@+id/image_user"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
         tools:text="0" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/text_bot_score"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textColor="@color/botColor"
-        app:layout_constraintEnd_toStartOf="@+id/imageView2"
-        app:layout_constraintTop_toBottomOf="@+id/materialToolbar"
+        app:layout_constraintEnd_toStartOf="@+id/image_bot"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
         tools:text="0" />
 
     <com.shanemaglangit.dotsandboxes.Board
+        android:id="@+id/board"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:padding="36dp"
@@ -74,6 +75,6 @@
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toBottomOf="@+id/text_user_score" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

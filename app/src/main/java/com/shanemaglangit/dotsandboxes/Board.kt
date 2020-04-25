@@ -7,36 +7,42 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.drawable.ColorDrawable
 import android.util.AttributeSet
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 
 
 class Board(context: Context, attrs: AttributeSet) : View(context, attrs) {
     // constants
-    private val defaultPlayerColor = ColorStateList.valueOf(Color.parseColor("#00A8CC"))
+    private val defaultUserColor = ColorStateList.valueOf(Color.parseColor("#00A8CC"))
     private val defaultBotColor = ColorStateList.valueOf(Color.parseColor("#FFA41B"))
 
     // paint for drawing components
-    private var dotPaint: Paint = Paint()
-    private var connectionPaint: Paint = Paint()
+    var dotPaint: Paint = Paint()
+    var connectionPaint: Paint = Paint()
 
     // player colors
-    private var playerColor: ColorStateList
-    private var botColor: ColorStateList
+    var userColor: ColorStateList
+    var botColor: ColorStateList
 
     // connection width
-    private var connectionWidth: Float
+    var connectionWidth: Float
 
     // dot radius
-    private var radius: Float
+    var radius: Float
 
     // list of dots
-    private var dots: MutableList<MutableList<Dot>> = mutableListOf()
-    private var connections: MutableList<Connection> = mutableListOf()
+    var dots: MutableList<MutableList<Dot>> = mutableListOf()
+    var connections: MutableList<Connection> = mutableListOf()
 
     // tracks the current player on turn
-    private var activePlayer = Player.USER
+    var activePlayer: Player = Player.USER
+
+    // scores
+    var userScore: Int
+    var botScrore: Int
+
+    // listener for when a user scores
+    var scoreChangedListener : ScoreChangedListener? = null
 
     init {
         background = ColorDrawable(Color.WHITE)
@@ -45,13 +51,16 @@ class Board(context: Context, attrs: AttributeSet) : View(context, attrs) {
             .apply {
                 try {
                     // get the colors from the declarable-styles (custom attributes)
-                    playerColor =
-                        getColorStateList(R.styleable.Board_playerColor) ?: defaultPlayerColor
+                    userColor =
+                        getColorStateList(R.styleable.Board_userColor) ?: defaultUserColor
                     botColor = getColorStateList(R.styleable.Board_botColor) ?: defaultBotColor
                     // get the radius or set it to 36F by default
                     radius = getFloat(R.styleable.Board_radius, 36F)
                     // get the connection width or set it to 24F by default
                     connectionWidth = getFloat(R.styleable.Board_connectionWidth, 24F)
+                    // get score
+                    userScore = getInt(R.styleable.Board_userScore, 0)
+                    botScrore = getInt(R.styleable.Board_botScore, 0)
                 } finally {
                     recycle()
                 }
@@ -59,23 +68,33 @@ class Board(context: Context, attrs: AttributeSet) : View(context, attrs) {
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
-        if(event?.action == MotionEvent.ACTION_DOWN) {
-            for(con in connections.filter { it.player == null }) {
+        if (event?.action == MotionEvent.ACTION_DOWN) {
+            for (con in connections.filter { it.player == null }) {
                 val isHorizontal = con.direction == ConnectionDirection.HORIZONTAL
-                val startBounds = (if(isHorizontal) con.headDot.x else con.headDot.y) + radius
-                val endBounds = (if(isHorizontal) con.tailDot.x else con.tailDot.y) - radius
-                val upperWidthBounds = (if(isHorizontal) con.headDot.y else con.headDot.x) - radius
-                val lowerWidthBounds = (if(isHorizontal) con.headDot.y else con.headDot.x) + radius
+                val startBounds = (if (isHorizontal) con.headDot.x else con.headDot.y) + radius
+                val endBounds = (if (isHorizontal) con.tailDot.x else con.tailDot.y) - radius
+                val upperWidthBounds = (if (isHorizontal) con.headDot.y else con.headDot.x) - radius
+                val lowerWidthBounds = (if (isHorizontal) con.headDot.y else con.headDot.x) + radius
 
-                val withinBounds = when(isHorizontal) {
+                val withinBounds = when (isHorizontal) {
                     true -> event.y in upperWidthBounds..lowerWidthBounds && event.x in startBounds..endBounds
                     else -> event.x in upperWidthBounds..lowerWidthBounds && event.y in startBounds..endBounds
                 }
 
-                if(withinBounds) {
+                if (withinBounds) {
                     con.player = activePlayer
-                    activePlayer = if (activePlayer == Player.USER) Player.BOT else Player.USER
+
+                    if (activePlayer == Player.USER) {
+                        userScore++
+                        activePlayer = Player.BOT
+                    } else {
+                        botScrore++
+                        activePlayer = Player.USER
+                    }
+
+                    scoreChangedListener?.scoreChanged(userScore, botScrore)
                     invalidate()
+                    break
                 }
             }
         }
@@ -105,21 +124,23 @@ class Board(context: Context, attrs: AttributeSet) : View(context, attrs) {
         // Create the connections
         for (row in 0 until dots.size) {
             for (col in 0 until dots[row].size) {
-                if(col + 1 < dots[row].size) {
+                if (col + 1 < dots[row].size) {
                     connections.add(
                         Connection(
                             direction = ConnectionDirection.HORIZONTAL,
                             headDot = dots[row][col],
                             tailDot = dots[row][col + 1]
-                        ))
+                        )
+                    )
                 }
-                if(row + 1 < dots.size) {
+                if (row + 1 < dots.size) {
                     connections.add(
                         Connection(
                             direction = ConnectionDirection.VERTICAL,
                             headDot = dots[row][col],
                             tailDot = dots[row + 1][col]
-                        ))
+                        )
+                    )
                 }
             }
         }
@@ -133,7 +154,7 @@ class Board(context: Context, attrs: AttributeSet) : View(context, attrs) {
         connections.forEach { connection ->
             // set the color depending on who owns the connection
             connectionPaint.color = when (connection.player) {
-                Player.USER -> playerColor.defaultColor
+                Player.USER -> userColor.defaultColor
                 Player.BOT -> botColor.defaultColor
                 else -> Color.LTGRAY
             }
